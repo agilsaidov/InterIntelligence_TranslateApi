@@ -3,26 +3,27 @@ package com.project.translate.service;
 import com.deepl.api.DeepLClient;
 import com.deepl.api.DeepLException;
 import com.deepl.api.TextResult;
+import com.project.translate.exception.TranslationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TranslateService {
 
-    @Value("${DEEPL_API_KEY}")
-    private String API_KEY;
+    private final DeepLClient deepLClient;
 
     public String translate(String sourceLang, String targetLang, String text){
         try {
-            DeepLClient deepLClient = new DeepLClient(API_KEY);
             TextResult result = deepLClient.translateText(text, sourceLang, targetLang);
             return result.getText();
 
         }catch (DeepLException | InterruptedException e){
-            return e.getMessage();
+            log.error("Translate failed: {}", e.getMessage(), e);
+            throw new TranslationException("Failed to translate text");
         }
     }
 }
