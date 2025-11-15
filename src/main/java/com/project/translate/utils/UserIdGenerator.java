@@ -2,7 +2,7 @@ package com.project.translate.utils;
 
 import java.security.SecureRandom;
 
-public class IdGenerator {
+public class UserIdGenerator {
     private static final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();
     private static final int ID_LENGTH = 8;

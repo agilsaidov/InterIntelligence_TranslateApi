@@ -5,10 +5,7 @@ import com.project.translate.service.StaredTranslationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/starred")
@@ -19,7 +16,12 @@ public class StarredTranslationController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addStaredTranslation(@Valid @RequestBody StarredTranslationRequest request) {
-        service.add(request);
+        service.starTranslation(request);
         return ResponseEntity.ok("Successfully added");
     }
+
+/*    @DeleteMapping("/remove")
+    public ResponseEntity<String> removeStaredTranslation(@Valid @RequestBody StarredTranslationRequest request) {
+
+    }*/
 }

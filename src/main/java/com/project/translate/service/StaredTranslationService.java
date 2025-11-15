@@ -12,14 +12,11 @@ public class StaredTranslationService {
 
     private final StaredTranslationRepo repo;
 
-    public void add(StarredTranslationRequest request) {
+    public void starTranslation(StarredTranslationRequest request) {
         StarredTranslation staredTranslation = new StarredTranslation();
 
         staredTranslation.setUserId(request.getUserId());
-        staredTranslation.setSourceText(request.getSourceText());
-        staredTranslation.setTranslatedText(request.getTranslatedText());
-        staredTranslation.setSourceLang(request.getSourceLang());
-        staredTranslation.setTargetLang(request.getTargetLang());
+        staredTranslation.setTranslationId(request.getTranslationId());
 
         repo.save(staredTranslation);
     }

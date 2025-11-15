@@ -2,7 +2,7 @@ package com.project.translate.controller;
 
 import com.deepl.api.TextResult;
 import com.project.translate.dto.request.TranslationRequestDto;
-import com.project.translate.dto.response.TranslationResponseDto;
+import com.project.translate.dto.response.TranslationResponse;
 import com.project.translate.service.TranslateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +19,12 @@ public class TranslateController {
     private final TranslateService translateService;
 
     @PostMapping
-    public ResponseEntity<TranslationResponseDto> getTranslation(@Valid @RequestBody TranslationRequestDto requestDto){
+    public ResponseEntity<TranslationResponse> getTranslation(@Valid @RequestBody TranslationRequestDto requestDto){
 
-        log.info("Translating text from {} to {}", requestDto.getSource(), requestDto.getTarget());
+        log.info("Translating text from {} to {}", requestDto.getSourceLang(), requestDto.getTargetLang());
 
-        TextResult translatedText = translateService.translate(requestDto.getSource(), requestDto.getTarget(), requestDto.getText());
+        TranslationResponse translationResponse = translateService.translate(requestDto);
 
-        return ResponseEntity.ok(new TranslationResponseDto(translatedText.getText(), translatedText.getDetectedSourceLanguage()));
+        return ResponseEntity.ok(translationResponse);
     }
 }

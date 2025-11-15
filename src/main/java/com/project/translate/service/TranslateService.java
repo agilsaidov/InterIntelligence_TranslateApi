@@ -3,7 +3,10 @@ package com.project.translate.service;
 import com.deepl.api.DeepLClient;
 import com.deepl.api.DeepLException;
 import com.deepl.api.TextResult;
+import com.project.translate.dto.request.TranslationRequestDto;
+import com.project.translate.dto.response.TranslationResponse;
 import com.project.translate.exception.TranslationException;
+import com.project.translate.model.TranslationHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,14 +18,27 @@ import org.springframework.stereotype.Service;
 public class TranslateService {
 
     private final DeepLClient deepLClient;
+    private final TranslationHistoryService historyService;
 
-    public TextResult translate(String sourceLang, String targetLang, String text){
-        if(sourceLang != null && sourceLang.isBlank()){
-            sourceLang = null;
+    public TranslationResponse translate(TranslationRequestDto requestDto){
+        if(requestDto.getSourceLang() != null && requestDto.getSourceLang().isBlank()){
+            requestDto.setSourceLang(null);
         }
 
         try {
-            return deepLClient.translateText(text, sourceLang, targetLang);
+            TextResult result = deepLClient.translateText(
+                    requestDto.getText(),
+                    requestDto.getSourceLang(),
+                    requestDto.getTargetLang()
+            );
+
+            TranslationHistory savedTranslation =  historyService.saveTranslation(requestDto, result);
+
+            return new TranslationResponse(
+                    savedTranslation.getId(),
+                    result.getText(),
+                    result.getDetectedSourceLanguage()
+            );
 
         }catch (DeepLException | InterruptedException e){
             log.error("Translate failed: {}", e.getMessage(), e);
