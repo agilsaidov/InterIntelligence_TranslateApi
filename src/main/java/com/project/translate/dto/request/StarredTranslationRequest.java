@@ -8,20 +8,10 @@ import lombok.Data;
 @Data
 public class StarredTranslationRequest {
 
-    @NotNull(message = "userId is required")
-    private Long userId;
+    @NotNull(message = "translationId is required")
+    private Long translationId;
 
-    @NotBlank(message = "sourceText is required")
-    private String sourceText;
-
-    @NotBlank(message = "translatedText is required")
-    private String translatedText;
-
-    @NotBlank(message = "sourceLang is required")
-    @Size(min = 2, max = 6, message = "source language is not valid")
-    private String sourceLang;
-
-    @NotBlank(message = "targetLang is required")
-    @Size(min = 2, max = 6, message = "target language is not valid")
-    private String targetLang;
+    @NotBlank(message = "userId is required")
+    @Size(min = 8,max = 10, message = "UserId is not valid")
+    private String userId;
 }

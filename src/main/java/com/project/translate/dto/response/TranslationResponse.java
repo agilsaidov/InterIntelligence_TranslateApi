@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TranslationResponseDto {
-    private Long id;
+public class TranslationResponse {
+    private Long translationId;
     private String translatedText;
     private String detectedSourceLanguage;
 }
