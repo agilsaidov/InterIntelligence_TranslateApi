@@ -3,6 +3,7 @@ package com.project.translate.exception;
 
 import com.project.translate.dto.response.ExceptionResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,6 +45,18 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ExceptionResponse> handleDataAccessException(DataAccessException e) {
+        String message = "An error occurred while trying to access the database";
+        ExceptionResponse error = new ExceptionResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "DATABASE_ERROR",
+                message,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

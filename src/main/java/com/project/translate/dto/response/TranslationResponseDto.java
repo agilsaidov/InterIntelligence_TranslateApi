@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TranslationResponseDto {
     private String translatedText;
+    private String detectedSourceLanguage;
 }

@@ -1,5 +1,6 @@
 package com.project.translate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class TranslationHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name = "user_id", nullable = false)
@@ -36,4 +38,7 @@ public class TranslationHistory {
     @Column(name = "translated_at")
     @CreationTimestamp
     private LocalDateTime translatedAt;
+
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
 }

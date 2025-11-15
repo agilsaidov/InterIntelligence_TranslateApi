@@ -1,5 +1,6 @@
 package com.project.translate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "stared_translations")
-public class StaredTranslation {
+public class StarredTranslation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name = "user_id", nullable = false)

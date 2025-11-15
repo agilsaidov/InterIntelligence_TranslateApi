@@ -16,14 +16,13 @@ public class TranslateService {
 
     private final DeepLClient deepLClient;
 
-    public String translate(String sourceLang, String targetLang, String text){
+    public TextResult translate(String sourceLang, String targetLang, String text){
         if(sourceLang != null && sourceLang.isBlank()){
             sourceLang = null;
         }
 
         try {
-            TextResult result = deepLClient.translateText(text, sourceLang, targetLang);
-            return result.getText();
+            return deepLClient.translateText(text, sourceLang, targetLang);
 
         }catch (DeepLException | InterruptedException e){
             log.error("Translate failed: {}", e.getMessage(), e);

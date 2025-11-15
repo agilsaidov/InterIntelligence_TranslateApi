@@ -5,7 +5,8 @@ CREATE TABLE translation_history(
             translated_text TEXT NOT NULL,
             source_lang VARCHAR(10) NOT NULL,
             target_lang VARCHAR(10) NOT NULL,
-            translated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            translated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 CREATE INDEX idx_user_id ON translation_history(user_id);
 CREATE INDEX idx_user_date ON translation_history(user_id, translated_at DESC);
