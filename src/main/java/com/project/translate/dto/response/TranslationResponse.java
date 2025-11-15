@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TranslationResponseDto {
+    private Long id;
     private String translatedText;
     private String detectedSourceLanguage;
 }

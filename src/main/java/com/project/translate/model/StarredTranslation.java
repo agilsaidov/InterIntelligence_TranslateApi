@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "stared_translations")
+@Table(name = "starred_translation")
 public class StarredTranslation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +21,12 @@ public class StarredTranslation {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private String userId;
 
-    @Column(name = "source_text", nullable = false)
-    private String sourceText;
+    @Column(name = "translation_id", nullable = false)
+    private Long translationId;
 
-    @Column(name = "translated_text", nullable = false)
-    private String translatedText;
-
-    @Column(name = "source_lang", nullable = false)
-    private String sourceLang;
-
-    @Column(name = "target_lang", nullable = false)
-    private String targetLang;
-
-    @Column(name = "translated_at")
+    @Column(name = "starred_at")
     @CreationTimestamp
-    private LocalDateTime translatedAt;
+    private LocalDateTime starredAt;
 }
