@@ -7,14 +7,12 @@ CREATE TABLE translation_history(
                 target_lang VARCHAR(10) NOT NULL,
                 translated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 starred BOOLEAN NOT NULL DEFAULT FALSE,
+                starred_at TIMESTAMP,
                 deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Core user history queries
 CREATE INDEX idx_user_active_history ON translation_history(user_id, deleted, translated_at DESC);
-
--- For: starred AND active translations
-CREATE INDEX idx_user_starred ON translation_history(user_id, starred, deleted, translated_at DESC);
 
 -- For: all starred translations (ignore deleted status)
 CREATE INDEX idx_user_starred_all ON translation_history(user_id, starred, translated_at DESC);

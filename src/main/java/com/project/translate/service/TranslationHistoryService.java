@@ -2,28 +2,61 @@ package com.project.translate.service;
 
 import com.deepl.api.TextResult;
 import com.project.translate.dto.request.TranslationRequestDto;
+import com.project.translate.exception.NotFoundException;
 import com.project.translate.model.TranslationHistory;
 import com.project.translate.repository.TranslationHistoryRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TranslationHistoryService {
 
     private final TranslationHistoryRepo translationHistoryRepo;
 
+    @Transactional
     public TranslationHistory saveTranslation(TranslationRequestDto translationRequestDto, TextResult textResult) {
 
-        TranslationHistory translationHistory = new TranslationHistory();
+        TranslationHistory translationHistory = TranslationHistory.builder()
+                .userId(translationRequestDto.getUserId())
+                .sourceLang(textResult.getDetectedSourceLanguage())
+                .targetLang(translationRequestDto.getTargetLang())
+                .translatedText(textResult.getText())
+                .sourceText(translationRequestDto.getText())
+                .build();
 
-        translationHistory.setUserId(translationRequestDto.getUserId());
-        translationHistory.setSourceLang(textResult.getDetectedSourceLanguage());
-        translationHistory.setTargetLang(translationRequestDto.getTargetLang());
-        translationHistory.setTranslatedText(textResult.getText());
-        translationHistory.setSourceText(translationRequestDto.getText());
+        TranslationHistory saved =  translationHistoryRepo.save(translationHistory);
 
-        return translationHistoryRepo.save(translationHistory);
+        log.debug("Saved translation {} for user {}", saved.getId(), saved.getUserId());
+
+        return saved;
+    }
+
+
+    @Transactional
+    public void removeTranslation(String userId, Long translationId) {
+
+        int affectedRows = translationHistoryRepo.softDeleteByIdAndUserId(translationId, userId);
+
+        if(affectedRows == 0){
+            log.warn("Translation {} not found for user {}", translationId, userId);
+
+            throw new NotFoundException("TRANSLATION_NOT_FOUND",
+                    "Translation not found in history");
+        }
+
+        log.info("Translation {} has been removed for user {}", translationId, userId);
+
+    }
+
+
+    @Transactional
+    public void clearHistory(String userId) {
+        int affected = translationHistoryRepo.softDeleteHistoryByUserId(userId);
+        log.info("History has been cleared for user {} and {} rows affected", userId, affected);
     }
 
 }

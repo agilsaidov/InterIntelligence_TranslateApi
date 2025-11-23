@@ -3,6 +3,7 @@ package com.project.translate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,15 +13,16 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "translation_history")
 public class TranslationHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(name = "user_id", nullable = false)
+    @JsonIgnore
     private String userId;
 
     @Column(name = "source_text", nullable = false)
@@ -39,6 +41,13 @@ public class TranslationHistory {
     @CreationTimestamp
     private LocalDateTime translatedAt;
 
+    @Column(name = "starred", nullable = false)
+    private Boolean starred = false;
+
+    @Column(name = "starred_at")
+    private LocalDateTime starredAt;
+
     @Column(name = "deleted", nullable = false)
+    @JsonIgnore
     private Boolean deleted = false;
 }

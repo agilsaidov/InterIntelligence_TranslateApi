@@ -60,23 +60,13 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(StarredTranslationNotFound.class)
-    public ResponseEntity<ExceptionResponse> handleStarredTranslationNotFound(StarredTranslationNotFound e) {
-        ExceptionResponse response = new ExceptionResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "STARRED_TRANSLATION_NOT_FOUND",
-                e.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
 
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException e) {
         ExceptionResponse response = new ExceptionResponse(
                 HttpStatus.NOT_FOUND.value(),
-                "USER_NOT_FOUND",
+                e.getErrorCode(),
                 e.getMessage(),
                 LocalDateTime.now()
         );
