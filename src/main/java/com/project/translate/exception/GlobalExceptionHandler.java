@@ -1,11 +1,14 @@
 package com.project.translate.exception;
 
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.project.translate.dto.response.ExceptionResponse;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -60,8 +63,6 @@ public class GlobalExceptionHandler {
     }
 
 
-
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException e) {
         ExceptionResponse response = new ExceptionResponse(
@@ -71,6 +72,33 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+
+        String message = "Invalid request body";
+        String errorCode = "HTTP_MESSAGE_NOT_READABLE";
+
+        if (e.getCause() instanceof JsonParseException) {
+            message = "Malformed JSON request";
+            errorCode = "INVALID_JSON";
+        } else if (e.getCause() instanceof MismatchedInputException) {
+            message = "Invalid data type in request body";
+            errorCode = "INVALID_DATA_TYPE";
+        } else if (e.getMessage() != null && e.getMessage().contains("Required request body is missing")) {
+            message = "Required request body is missing";
+            errorCode = "MISSING_REQUEST_BODY";
+        }
+
+        ExceptionResponse response = new ExceptionResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                errorCode,
+                message,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }

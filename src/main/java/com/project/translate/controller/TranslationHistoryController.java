@@ -18,10 +18,13 @@ public class TranslationHistoryController {
     public ResponseEntity<?> getTranslationHistory(@RequestParam("userId") String userId,
                                                    @RequestParam(defaultValue = "0") int page) {
 
+        if(page < 0) page *=-1 ;
+
         return ResponseEntity.ok().
-                body(translationHistoryService.
-                        getAllTranslations(userId, PageRequest.
-                                of(page, 10)));
+                body(translationHistoryService.getAllTranslations(
+                        userId,
+                        PageRequest.of(page, 10))
+                );
     }
 
 
