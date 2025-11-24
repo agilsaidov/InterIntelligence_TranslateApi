@@ -30,16 +30,16 @@ public class TranslationHistoryController {
                                           @PathVariable Long translationId) {
 
         //After security implementation userId will be sent instead of token
-        translationHistoryService.removeTranslation("EFGH5678", translationId);
+        translationHistoryService.removeTranslation(token, translationId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> removeAllTranslations(//@RequestHeader("Authorization") String token
+    public ResponseEntity<Void> removeAllTranslations(@RequestHeader("Authorization") String token
     ) {
 
         //After security implementation userId will be sent instead of token
-        translationHistoryService.clearHistory("EFGH5678");
+        translationHistoryService.clearHistory(token);
         return ResponseEntity.noContent().build();
     }
 

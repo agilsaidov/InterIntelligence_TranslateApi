@@ -29,6 +29,8 @@ public class TranslationHistoryService {
                 .targetLang(translationRequestDto.getTargetLang())
                 .translatedText(textResult.getText())
                 .sourceText(translationRequestDto.getText())
+                .starred(false)
+                .deleted(false)
                 .build();
 
         TranslationHistory saved =  translationHistoryRepo.save(translationHistory);
