@@ -7,8 +7,11 @@ import com.project.translate.model.TranslationHistory;
 import com.project.translate.repository.TranslationHistoryRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,13 @@ public class TranslationHistoryService {
         log.debug("Saved translation {} for user {}", saved.getId(), saved.getUserId());
 
         return saved;
+    }
+
+
+    public List<TranslationHistory> getAllTranslations(String userId, Pageable pageable) {
+        List<TranslationHistory> history = translationHistoryRepo.getTranslationHistoriesByUserId(userId, pageable);
+        log.info("History fetched by user {}", userId);
+        return history;
     }
 
 
