@@ -43,8 +43,8 @@ public class TranslationHistoryService {
     }
 
 
-    public List<TranslationHistory> getAllTranslations(String userId, Pageable pageable) {
-        List<TranslationHistory> history = translationHistoryRepo.getTranslationHistoriesByUserId(userId, pageable);
+    public Page<TranslationHistory> getAllTranslations(String userId, Pageable pageable) {
+        Page<TranslationHistory> history = translationHistoryRepo.getTranslationHistoriesByUserId(userId, pageable);
         log.info("History fetched by user {}", userId);
         return history;
     }
@@ -76,6 +76,7 @@ public class TranslationHistoryService {
 
     //Starred Translation Methods
 
+    @Transactional
     public void addStarredTranslation(String userId, Long translationId) {
 
         int affected = translationHistoryRepo.starByUserIdAndTranslationId(userId, translationId);
@@ -92,6 +93,19 @@ public class TranslationHistoryService {
     public Page<TranslationHistory> getStarredTranslations(String userId, Pageable pageable) {
 
         return translationHistoryRepo.getStarredTranslationsByUserId(userId, pageable);
+    }
+
+
+    @Transactional
+    public void unstarTranslation(String userId, Long translationId) {
+        int affected = translationHistoryRepo.unstarTranslationByUserIdAndTranslationId(userId, translationId);
+
+        if(affected == 0){
+            throw new StarredTranslationProcessException("STARRING_PROCESS_FAILURE",
+                    "Could not unstar the translation. It may not exist, be already deleted, or you don't have permission."
+            );
+        }
+        log.info("Translation {} has been unstarred for user {}", translationId, userId);
     }
 
 }

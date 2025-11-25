@@ -14,9 +14,9 @@ public class TranslationHistoryController {
     private final TranslationHistoryService translationHistoryService;
 
 
-    @GetMapping("/get")
+    @GetMapping
     public ResponseEntity<?> getTranslationHistory(@RequestParam("userId") String userId,
-                                                   @RequestParam(defaultValue = "0") int page) {
+                                                   @RequestParam(defaultValue = "0") Integer page) {
 
         if(page < 0) page *=-1 ;
 
@@ -28,7 +28,7 @@ public class TranslationHistoryController {
     }
 
 
-    @DeleteMapping("/remove/{translationId}")
+    @DeleteMapping
     public ResponseEntity<Void> removeTranslation(@RequestHeader("Authorization") String token,
                                           @PathVariable Long translationId) {
 
