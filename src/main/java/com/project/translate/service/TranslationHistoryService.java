@@ -2,10 +2,12 @@ package com.project.translate.service;
 
 import com.deepl.api.TextResult;
 import com.project.translate.dto.request.TranslationRequestDto;
+import com.project.translate.dto.response.TranslationHistoryResponse;
 import com.project.translate.exception.NotFoundException;
 import com.project.translate.exception.StarredTranslationProcessException;
 import com.project.translate.model.TranslationHistory;
 import com.project.translate.repository.TranslationHistoryRepo;
+import com.project.translate.utils.TranslationHistoryMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import java.util.List;
 public class TranslationHistoryService {
 
     private final TranslationHistoryRepo translationHistoryRepo;
+    private final TranslationHistoryMapper translationHistoryMapper;
 
     @Transactional
     public TranslationHistory saveTranslation(TranslationRequestDto translationRequestDto, TextResult textResult) {
@@ -43,10 +46,10 @@ public class TranslationHistoryService {
     }
 
 
-    public Page<TranslationHistory> getAllTranslations(String userId, Pageable pageable) {
+    public Page<TranslationHistoryResponse> getAllTranslations(String userId, Pageable pageable) {
         Page<TranslationHistory> history = translationHistoryRepo.getTranslationHistoriesByUserId(userId, pageable);
         log.info("History fetched by user {}", userId);
-        return history;
+        return history.map(translationHistoryMapper::toResponse);
     }
 
 
