@@ -108,4 +108,15 @@ public class TranslationHistoryService {
         log.info("Translation {} has been unstarred for user {}", translationId, userId);
     }
 
+
+    @Transactional
+    public void clearStarredTranslations(String userId) {
+       int affected = translationHistoryRepo.clearStarredTranslationsByUserId(userId);
+        if(affected == 0){
+            log.info("No Starred translation to clear for user {}", userId);
+        }else{
+            log.info("Cleared {} starred translation(s) for user {}", affected, userId);
+        }
+    }
+
 }

@@ -44,7 +44,14 @@ public class StarredTranslationController {
                                                   @RequestParam("translationId") Long translationId) {
 
         translationHistoryService.unstarTranslation(userId, translationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<Void> clearStarredTranslations(@RequestParam("userId") String userId) {
+        translationHistoryService.clearStarredTranslations(userId);
+        return ResponseEntity.noContent().build();
     }
 
 }

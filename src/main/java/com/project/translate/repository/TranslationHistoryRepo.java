@@ -23,7 +23,7 @@ public interface TranslationHistoryRepo extends CrudRepository<TranslationHistor
 
     @Modifying
     @Transactional
-    @Query("UPDATE TranslationHistory t SET t.deleted = true WHERE t.userId = :userId")
+    @Query("UPDATE TranslationHistory t SET t.deleted = true WHERE t.userId = :userId AND t.deleted = false")
     int softDeleteHistoryByUserId(@Param("userId") String userId);
 
 
@@ -45,4 +45,10 @@ public interface TranslationHistoryRepo extends CrudRepository<TranslationHistor
     @Transactional
     @Query("UPDATE TranslationHistory t SET t.starred = false WHERE t.userId = :userId AND t.id = :translationId AND t.starred = true")
     int unstarTranslationByUserIdAndTranslationId(@Param("userId") String userId, @Param("translationId") Long translationId);
+
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE TranslationHistory t SET t.starred = false WHERE t.userId= :userId AND t.starred = true")
+    int clearStarredTranslationsByUserId(@Param("userId") String userId);
 }

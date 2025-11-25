@@ -30,7 +30,7 @@ public class TranslationHistoryController {
 
     @DeleteMapping
     public ResponseEntity<Void> removeTranslation(@RequestHeader("Authorization") String token,
-                                          @PathVariable Long translationId) {
+                                                  @RequestParam("translationId") Long translationId) {
 
         //After security implementation userId will be sent instead of token
         translationHistoryService.removeTranslation(token, translationId);
