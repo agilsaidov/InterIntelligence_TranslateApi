@@ -3,10 +3,10 @@ package com.project.translate.exception;
 import lombok.Getter;
 
 @Getter
-public class NotFoundException extends RuntimeException {
+public class StarredTranslationProcessException extends RuntimeException {
     private final String errorCode;
 
-    public NotFoundException(String errorCode, String message) {
+    public StarredTranslationProcessException(String errorCode,String message) {
         super(message);
         this.errorCode = errorCode;
     }

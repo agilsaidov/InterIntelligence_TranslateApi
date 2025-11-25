@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 
         ExceptionResponse response = new ExceptionResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "VALIDATION_FAILED",
+                "VALIDATION_FAILURE",
                 String.join(", ",errors),
                 LocalDateTime.now()
         );
@@ -72,6 +72,18 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(StarredTranslationProcessException.class)
+    public ResponseEntity<ExceptionResponse> handleStarredTranslationProcessException(StarredTranslationProcessException e) {
+        ExceptionResponse response = new ExceptionResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                e.getErrorCode(),
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 

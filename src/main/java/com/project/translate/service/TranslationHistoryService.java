@@ -3,6 +3,7 @@ package com.project.translate.service;
 import com.deepl.api.TextResult;
 import com.project.translate.dto.request.TranslationRequestDto;
 import com.project.translate.exception.NotFoundException;
+import com.project.translate.exception.StarredTranslationProcessException;
 import com.project.translate.model.TranslationHistory;
 import com.project.translate.repository.TranslationHistoryRepo;
 import lombok.RequiredArgsConstructor;
@@ -64,11 +65,26 @@ public class TranslationHistoryService {
 
     }
 
-
     @Transactional
     public void clearHistory(String userId) {
         int affected = translationHistoryRepo.softDeleteHistoryByUserId(userId);
         log.info("History has been cleared for user {} and {} rows affected", userId, affected);
+    }
+
+
+
+    //Starred Translation Methods
+
+    public void addStarredTranslation(String userId, Long translationId) {
+
+        int affected = translationHistoryRepo.starByUserIdAndTranslationId(userId, translationId);
+        if(affected == 0){
+            throw new StarredTranslationProcessException("STARRING_PROCESS_FAILURE",
+                    "Could not star the translation. It may not exist, be deleted, or you don't have permission."
+            );
+        }
+
+        log.info("Translation {} has been starred for user {}", translationId, userId);
     }
 
 }

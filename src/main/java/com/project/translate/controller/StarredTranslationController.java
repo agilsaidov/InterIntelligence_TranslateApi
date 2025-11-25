@@ -1,10 +1,9 @@
 package com.project.translate.controller;
 
 import com.project.translate.dto.request.StarredTranslationRequest;
-import com.project.translate.dto.response.StarredTranslationResponse;
 import com.project.translate.service.TranslationHistoryService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,14 +16,12 @@ public class StarredTranslationController {
 
     private final TranslationHistoryService translationHistoryService;
 
-/*
-    @PostMapping("/get")
-    public List<StarredTranslationResponse>  getStarredTranslations(@RequestHeader("Authorization")  String token) {
+    @PostMapping("/add")
+    public ResponseEntity<Void> addStarredTranslation(@RequestParam("userId") String userId,
+                                                   @RequestParam("translationId") Long translationId) {
 
-        //translationHistoryService.getStarred();
-
+        translationHistoryService.addStarredTranslation(userId, translationId);
+        return ResponseEntity.ok().build();
     }
-*/
-
 
 }
