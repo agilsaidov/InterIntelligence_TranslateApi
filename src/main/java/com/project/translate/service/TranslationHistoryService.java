@@ -8,6 +8,7 @@ import com.project.translate.model.TranslationHistory;
 import com.project.translate.repository.TranslationHistoryRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,12 @@ public class TranslationHistoryService {
         }
 
         log.info("Translation {} has been starred for user {}", translationId, userId);
+    }
+
+
+    public Page<TranslationHistory> getStarredTranslations(String userId, Pageable pageable) {
+
+        return translationHistoryRepo.getStarredTranslationsByUserId(userId, pageable);
     }
 
 }
