@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 
@@ -18,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig{
 
+    private final JwtValidationFilter jwtValidationFilter;
+
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -26,6 +29,8 @@ public class SecurityConfig{
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/**").authenticated()
                 )
+
+                .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .cors(cors -> cors.configurationSource(request -> {
 
