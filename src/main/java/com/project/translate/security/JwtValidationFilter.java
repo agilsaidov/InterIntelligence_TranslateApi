@@ -57,10 +57,16 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        }catch(Exception e){
-            sendExceptionResponse(
-                    response,
-                    HttpStatus.UNAUTHORIZED,
+        }catch (io.jsonwebtoken.ExpiredJwtException e) {
+            sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
+                    "TOKEN_EXPIRED", "JWT token has expired");
+
+        } catch (io.jsonwebtoken.JwtException e) {
+            sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
+                    "INVALID_TOKEN", "Invalid JWT token");
+        }
+        catch(Exception e){
+            sendExceptionResponse(response, HttpStatus.INTERNAL_SERVER_ERROR,
                     "AUTHENTICATION_ERROR",
                     "Authentication failed"
             );
