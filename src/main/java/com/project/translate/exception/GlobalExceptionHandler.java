@@ -12,7 +12,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -110,6 +109,19 @@ public class GlobalExceptionHandler {
                 message,
                 LocalDateTime.now()
         );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ExceptionResponse> handleUserException(UserException e) {
+        ExceptionResponse response = new ExceptionResponse(
+                e.getStatus().value(),
+                e.getErrorCode(),
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

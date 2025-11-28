@@ -1,6 +1,11 @@
 package com.project.translate.auth.controller;
 
-import com.project.translate.dto.request.RegistrationRequest;
+import com.project.translate.auth.dto.request.RegistrationRequest;
+import com.project.translate.auth.dto.response.RegistrationResponse;
+import com.project.translate.auth.service.AuthService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/register")
-public class RegistrationController {
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
+public class AuthController {
 
-    @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
+    private final AuthService authService;
 
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request) {
+        RegistrationResponse registrationResponse = authService.registerUser(request);
+        return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Locale;
+
 
 @Component
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                     String userId = jwtService.getIdFromToken(jwtToken);
                     String role = jwtService.getRoleFromToken(jwtToken);
 
-                    var authentication = new UsernamePasswordAuthenticationToken(
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                                     userId,
                             null,
                                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
@@ -78,9 +78,9 @@ public class JwtValidationFilter extends OncePerRequestFilter {
     public boolean shouldNotFilter(HttpServletRequest request){
         String path = request.getServletPath();
 
-        return path.equals("/login")
-                || path.equals("/register")
-                || path.equals("/public/");
+        return path.equals("/api/v1/auth/login")
+                || path.equals("/api/v1/auth/register")
+                || path.equals("/api/v1/auth/public/");
     }
 
 
@@ -96,9 +96,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         ExceptionResponse errorResponse = new ExceptionResponse(status.value(), code, message, LocalDateTime.now());
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
-
-
-
 
 
     private String extractToken(HttpServletRequest request) {

@@ -3,6 +3,7 @@ package com.project.translate.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class AppUser {
@@ -48,11 +50,13 @@ public class AppUser {
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'USER'")
+    @Builder.Default
     private Role role = Role.USER;
 
     @Column(name = "account_status", length = 50)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ACTIVE'")
+    @Builder.Default
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @Column(name = "last_login")
@@ -60,6 +64,7 @@ public class AppUser {
 
     @Column(name = "login_count", nullable = false)
     @ColumnDefault("0")
+    @Builder.Default
     private Integer loginCount = 0;
 
     @CreationTimestamp
