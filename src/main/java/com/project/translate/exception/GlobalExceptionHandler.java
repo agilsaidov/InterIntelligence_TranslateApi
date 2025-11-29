@@ -113,8 +113,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<ExceptionResponse> handleUserException(UserException e) {
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ExceptionResponse> handleUserException(AuthException e) {
         ExceptionResponse response = new ExceptionResponse(
                 e.getStatus().value(),
                 e.getErrorCode(),

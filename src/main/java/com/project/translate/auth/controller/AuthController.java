@@ -1,6 +1,8 @@
 package com.project.translate.auth.controller;
 
+import com.project.translate.auth.dto.request.LoginRequest;
 import com.project.translate.auth.dto.request.RegistrationRequest;
+import com.project.translate.auth.dto.response.LoginResponse;
 import com.project.translate.auth.dto.response.RegistrationResponse;
 import com.project.translate.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -23,5 +25,11 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request) {
         RegistrationResponse registrationResponse = authService.registerUser(request);
         return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authService.loginUser(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
