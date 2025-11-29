@@ -11,12 +11,14 @@ import com.project.translate.security.JwtService;
 import com.project.translate.utils.UserIdGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserIdGenerator idGenerator;
     private final JwtService jwtService;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private static final String TOKEN_BLACKLIST_PREFIX = "blisted_token:";
+    private static final int BLACKLIST_EXPIRATION = 60;
 
     @Transactional
     public RegistrationResponse registerUser(RegistrationRequest request) {
@@ -87,5 +93,28 @@ public class AuthService {
                 .publicId(user.getPublicId())
                 .profilePicture(user.getPpUrl())
                 .build();
+    }
+
+
+    public void logoutUser(String token) {
+
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new AuthException(
+                    HttpStatus.BAD_REQUEST,
+                    "INVALID_TOKEN",
+                    "Invalid token format"
+            );
+        }
+
+        String jwtToken = token.substring(7);
+
+        redisTemplate.opsForValue().set(
+                TOKEN_BLACKLIST_PREFIX + jwtToken,
+                jwtToken,
+                BLACKLIST_EXPIRATION,
+                TimeUnit.MINUTES
+        );
+
+        log.info("Token blacklisted successfully");
     }
 }
