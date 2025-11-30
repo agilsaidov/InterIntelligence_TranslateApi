@@ -40,17 +40,14 @@ public class JwtService {
     }
 
     public boolean validateToken(String token) {
-        try{
-            Jwts.parser()
-                    .verifyWith(getSecretKey())
-                    .build()
-                    .parseSignedClaims(token);
 
-            return true;
+        Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token);
 
-        }catch(JwtException | IllegalArgumentException e){
-            return  false;
-        }
+        return true;
+
     }
 
 

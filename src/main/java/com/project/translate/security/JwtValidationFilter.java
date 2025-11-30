@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +29,9 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final ObjectMapper objectMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
+    private static final String TOKEN_BLACKLIST_PREFIX = "blisted_token:";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,6 +43,13 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
         try{
             if(jwtToken != null){
+
+                if(redisTemplate.hasKey(TOKEN_BLACKLIST_PREFIX + jwtToken)) {
+                    sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
+                            "BLACKLISTED_TOKEN", "Given token is black-listed.");
+                    return;
+                }
+
                 if(jwtService.validateToken(jwtToken)){
                     String userId = jwtService.getIdFromToken(jwtToken);
                     String role = jwtService.getRoleFromToken(jwtToken);
@@ -66,6 +76,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         } catch (JwtException e) {
             sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
                     "INVALID_TOKEN", "Invalid JWT token");
+
         }
         catch(Exception e){
             sendExceptionResponse(response, HttpStatus.INTERNAL_SERVER_ERROR,
@@ -77,6 +88,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
     }
 
 
+    @Override
     public boolean shouldNotFilter(HttpServletRequest request){
         String path = request.getServletPath();
 
