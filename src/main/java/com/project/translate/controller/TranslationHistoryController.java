@@ -4,6 +4,7 @@ import com.project.translate.service.TranslationHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,7 +16,7 @@ public class TranslationHistoryController {
 
 
     @GetMapping
-    public ResponseEntity<?> getTranslationHistory(@RequestParam("userId") String userId,
+    public ResponseEntity<?> getTranslationHistory(@AuthenticationPrincipal String userId,
                                                    @RequestParam(defaultValue = "0") Integer page) {
 
         if(page < 0) page *=-1 ;
@@ -29,20 +30,17 @@ public class TranslationHistoryController {
 
 
     @DeleteMapping
-    public ResponseEntity<Void> removeTranslation(@RequestHeader("Authorization") String token,
+    public ResponseEntity<Void> removeTranslation(@AuthenticationPrincipal String userId,
                                                   @RequestParam("translationId") Long translationId) {
 
-        //After security implementation userId will be sent instead of token
-        translationHistoryService.removeTranslation(token, translationId);
+        translationHistoryService.removeTranslation(userId, translationId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> removeAllTranslations(@RequestHeader("Authorization") String token
-    ) {
+    public ResponseEntity<Void> removeAllTranslations(@AuthenticationPrincipal String userId) {
 
-        //After security implementation userId will be sent instead of token
-        translationHistoryService.clearHistory(token);
+        translationHistoryService.clearHistory(userId);
         return ResponseEntity.noContent().build();
     }
 

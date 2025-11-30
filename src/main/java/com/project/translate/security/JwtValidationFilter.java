@@ -2,6 +2,8 @@ package com.project.translate.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.translate.dto.response.ExceptionResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,11 +59,11 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        }catch (io.jsonwebtoken.ExpiredJwtException e) {
+        }catch (ExpiredJwtException e) {
             sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
                     "TOKEN_EXPIRED", "JWT token has expired");
 
-        } catch (io.jsonwebtoken.JwtException e) {
+        } catch (JwtException e) {
             sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
                     "INVALID_TOKEN", "Invalid JWT token");
         }

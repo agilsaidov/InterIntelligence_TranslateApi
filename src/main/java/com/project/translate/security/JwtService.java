@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
@@ -21,7 +21,7 @@ public class JwtService {
     private String secret;
 
     public String generateToken(AppUser user) {
-        Map<String, Object> claims = new HashMap<String, Object>();
+        Map<String, Object> claims = new LinkedHashMap<>();
 
         claims.put("email", user.getEmail());
         claims.put("name", user.getName());
@@ -76,7 +76,6 @@ public class JwtService {
         Claims claims = getClaims(token);
         return claims.getSubject();
     }
-
 
 
     private SecretKey getSecretKey() {

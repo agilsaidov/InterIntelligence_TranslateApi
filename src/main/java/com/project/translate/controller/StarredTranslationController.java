@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -16,9 +17,9 @@ public class StarredTranslationController {
 
     private final TranslationHistoryService translationHistoryService;
 
-    //Will change after security implementation
+
     @PostMapping
-    public ResponseEntity<Void> addStarredTranslation(@RequestParam("userId") String userId,
+    public ResponseEntity<Void> addStarredTranslation(@AuthenticationPrincipal String userId,
                                                    @RequestParam("translationId") Long translationId) {
 
         translationHistoryService.addStarredTranslation(userId, translationId);
@@ -26,9 +27,9 @@ public class StarredTranslationController {
     }
 
 
-    //Will change after security implementation
+
     @GetMapping
-    public ResponseEntity<Page<TranslationHistory>> getStarredTranslations(@RequestParam("userId") String userId,
+    public ResponseEntity<Page<TranslationHistory>> getStarredTranslations(@AuthenticationPrincipal String userId,
                                                                            @RequestParam(defaultValue = "0") Integer page) {
 
         if(page < 0) page *= -1;
@@ -38,9 +39,9 @@ public class StarredTranslationController {
     }
 
 
-    //Will change after security implementation
+
     @DeleteMapping
-    public ResponseEntity<Void> unstarTranslation(@RequestParam("userId") String userId,
+    public ResponseEntity<Void> unstarTranslation(@AuthenticationPrincipal String userId,
                                                   @RequestParam("translationId") Long translationId) {
 
         translationHistoryService.unstarTranslation(userId, translationId);
@@ -49,7 +50,7 @@ public class StarredTranslationController {
 
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> clearStarredTranslations(@RequestParam("userId") String userId) {
+    public ResponseEntity<Void> clearStarredTranslations(@AuthenticationPrincipal String userId) {
         translationHistoryService.clearStarredTranslations(userId);
         return ResponseEntity.noContent().build();
     }
