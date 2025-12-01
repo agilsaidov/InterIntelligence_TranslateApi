@@ -1,6 +1,7 @@
 package com.project.translate.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class AppUser {
     private String username;
 
     @Column(nullable = false, length = 300)
+    @JsonIgnore
     private String password;
 
     @Column(name = "name", length = 150)
@@ -60,19 +62,23 @@ public class AppUser {
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @Column(name = "last_login")
+    @JsonIgnore
     private LocalDateTime lastLogin;
 
     @Column(name = "login_count", nullable = false)
     @ColumnDefault("0")
     @Builder.Default
+    @JsonIgnore
     private Integer loginCount = 0;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     @Column(name = "profile_picture_url",length = 500)

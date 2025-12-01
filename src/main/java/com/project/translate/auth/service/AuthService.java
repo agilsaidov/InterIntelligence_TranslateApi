@@ -6,7 +6,7 @@ import com.project.translate.auth.dto.response.LoginResponse;
 import com.project.translate.auth.dto.response.RegistrationResponse;
 import com.project.translate.exception.AuthException;
 import com.project.translate.model.AppUser;
-import com.project.translate.repository.UserRepo;
+import com.project.translate.repository.AppUserRepo;
 import com.project.translate.security.JwtService;
 import com.project.translate.utils.UserIdGenerator;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class AuthService {
 
-    private final UserRepo userRepo;
+    private final AppUserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final UserIdGenerator idGenerator;
     private final JwtService jwtService;
