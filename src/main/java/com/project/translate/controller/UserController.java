@@ -37,5 +37,12 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/profile")
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal String userId,
+                                           @RequestHeader("Authorization") String token) {
+        userService.softDeleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }
