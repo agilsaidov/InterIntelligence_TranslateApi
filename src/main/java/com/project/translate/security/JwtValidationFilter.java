@@ -32,6 +32,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
     private final RedisTemplate<String, Object> redisTemplate;
 
     private static final String TOKEN_BLACKLIST_PREFIX = "blisted_token:";
+    private static final String USER_BLACKLIST_PREFIX = "blisted_user:";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -44,15 +45,22 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         try{
             if(jwtToken != null){
 
-                if(redisTemplate.hasKey(TOKEN_BLACKLIST_PREFIX + jwtToken)) {
+                String userId = jwtService.getIdFromToken(jwtToken);
+                String role = jwtService.getRoleFromToken(jwtToken);
+
+                if(redisTemplate.hasKey(TOKEN_BLACKLIST_PREFIX + jwtToken) || redisTemplate.hasKey(USER_BLACKLIST_PREFIX + userId)) {
                     sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
                             "BLACKLISTED_TOKEN", "Given token is black-listed.");
                     return;
                 }
 
+                if(redisTemplate.hasKey(USER_BLACKLIST_PREFIX + userId)) {
+                    sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
+                            "DELETED_USER", "User has been deleted.");
+                    return;
+                }
+
                 if(jwtService.validateToken(jwtToken)){
-                    String userId = jwtService.getIdFromToken(jwtToken);
-                    String role = jwtService.getRoleFromToken(jwtToken);
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                                     userId,
