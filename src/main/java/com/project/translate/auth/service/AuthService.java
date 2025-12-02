@@ -5,6 +5,8 @@ import com.project.translate.auth.dto.request.RegistrationRequest;
 import com.project.translate.auth.dto.response.LoginResponse;
 import com.project.translate.auth.dto.response.RegistrationResponse;
 import com.project.translate.exception.AuthException;
+import com.project.translate.exception.DeletedUserException;
+import com.project.translate.model.AccountStatus;
 import com.project.translate.model.AppUser;
 import com.project.translate.repository.AppUserRepo;
 import com.project.translate.security.JwtService;
@@ -17,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -71,6 +72,10 @@ public class AuthService {
                         "INVALID_CREDENTIALS",
                         "Given credential(s) are not valid")
                 );
+
+        if(user.getAccountStatus().equals(AccountStatus.DELETED)){
+            throw new DeletedUserException("This user and profile has been deleted");
+        }
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
             throw new AuthException(

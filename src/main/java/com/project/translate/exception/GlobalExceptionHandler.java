@@ -137,4 +137,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(DeletedUserException.class)
+    public ResponseEntity<ExceptionResponse> handleAccountDeletedException(DeletedUserException e) {
+        ExceptionResponse response = new ExceptionResponse(
+                HttpStatus.FORBIDDEN.value(),
+                "USER_DELETED",
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
 }

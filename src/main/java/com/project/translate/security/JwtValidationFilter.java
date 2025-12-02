@@ -54,12 +54,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                if(redisTemplate.hasKey(USER_BLACKLIST_PREFIX + userId)) {
-                    sendExceptionResponse(response, HttpStatus.UNAUTHORIZED,
-                            "DELETED_USER", "User has been deleted.");
-                    return;
-                }
-
                 if(jwtService.validateToken(jwtToken)){
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
