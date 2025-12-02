@@ -1,6 +1,8 @@
 package com.project.translate.controller;
 
+import com.project.translate.dto.request.ChangePasswordRequest;
 import com.project.translate.dto.request.UserDataUpdateRequest;
+import com.project.translate.dto.response.UserResponse;
 import com.project.translate.service.AppUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +19,22 @@ public class UserController {
     private final AppUserService userService;
 
     @GetMapping("/profile")
-    public ResponseEntity<?> getUserData(@AuthenticationPrincipal String userId) {
+    public ResponseEntity<UserResponse> getUserData(@AuthenticationPrincipal String userId) {
         return new ResponseEntity<>(userService.getUserData(userId), HttpStatus.OK);
     }
 
     @PostMapping("/profile")
-    public ResponseEntity<?> updateUserData(@AuthenticationPrincipal String userId,
+    public ResponseEntity<UserResponse> updateUserData(@AuthenticationPrincipal String userId,
                                             @RequestBody UserDataUpdateRequest request) {
         return new ResponseEntity<>(userService.updateUserData(userId, request), HttpStatus.OK);
 
+    }
+
+    @PostMapping("/changepassword")
+    public ResponseEntity<Void> changeUserPassword(@AuthenticationPrincipal String userId,
+                                                @Valid @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(userId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
