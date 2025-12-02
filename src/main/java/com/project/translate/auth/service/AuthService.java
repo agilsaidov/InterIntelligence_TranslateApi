@@ -80,8 +80,7 @@ public class AuthService {
             );
         }
 
-        user.setLoginCount(user.getLoginCount()+1);
-        user.setLastLogin(LocalDateTime.now());
+        user.recordLogin();
 
         userRepo.save(user);
         log.info("Login Successfully with email: {}", user.getEmail());

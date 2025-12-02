@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name = "public_id", unique = true, nullable = false, length = 10)
@@ -59,10 +61,10 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ACTIVE'")
     @Builder.Default
+    @JsonIgnore
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @Column(name = "last_login")
-    @JsonIgnore
     private LocalDateTime lastLogin;
 
     @Column(name = "login_count", nullable = false)
@@ -76,7 +78,7 @@ public class AppUser {
     @JsonIgnore
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+
     @Column(name = "updated_at")
     @JsonIgnore
     private LocalDateTime updatedAt;
@@ -85,10 +87,14 @@ public class AppUser {
     private String ppUrl;
 
 
-    //Helper method
+    //Helper methods
     public void recordLogin(){
         this.loginCount++;
         this.lastLogin = LocalDateTime.now();
+    }
+
+    public void recordUpdate(){
+        this.updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     public String getDisplayName(){
