@@ -28,6 +28,8 @@ public class TranslationHistoryService {
     @Transactional
     public TranslationHistory saveTranslation(TranslationRequestDto translationRequestDto, TextResult textResult) {
 
+        log.info("Saving translation for user {}", translationRequestDto.getUserId());
+
         TranslationHistory translationHistory = TranslationHistory.builder()
                 .userId(translationRequestDto.getUserId())
                 .sourceLang(textResult.getDetectedSourceLanguage())
@@ -47,8 +49,12 @@ public class TranslationHistoryService {
 
 
     public Page<TranslationHistoryResponse> getAllTranslations(String userId, Pageable pageable) {
+        log.info("Fetching translation history for user {} (page: {}, size: {})",
+                userId, pageable.getPageNumber(), pageable.getPageSize());
+
         Page<TranslationHistory> history = translationHistoryRepo.getTranslationHistoriesByUserId(userId, pageable);
-        log.info("History fetched by user {}", userId);
+
+        log.debug("Retrieved {} translations for user {}", history.getTotalElements(), userId);
         return history.map(translationHistoryMapper::toResponse);
     }
 
@@ -82,18 +88,26 @@ public class TranslationHistoryService {
     @Transactional
     public void addStarredTranslation(String userId, Long translationId) {
 
+        log.info("Star translation request {} by user {}", translationId, userId);
+
         int affected = translationHistoryRepo.starByUserIdAndTranslationId(userId, translationId);
+
         if(affected == 0){
+
+            log.warn("Failed to star translation {} for user {} - not found or no permission",
+                    translationId, userId);
+
             throw new StarredTranslationProcessException("STARRING_PROCESS_FAILURE",
                     "Could not star the translation. It may not exist, be deleted, or you don't have permission."
             );
         }
 
-        log.info("Translation {} has been starred for user {}", translationId, userId);
+        log.debug("Translation {} starred successfully for user {}", translationId, userId);
     }
 
 
     public Page<TranslationHistory> getStarredTranslations(String userId, Pageable pageable) {
+        log.info("Starred translations fetched by user {}", userId);
 
         return translationHistoryRepo.getStarredTranslationsByUserId(userId, pageable);
     }
@@ -101,24 +115,33 @@ public class TranslationHistoryService {
 
     @Transactional
     public void unstarTranslation(String userId, Long translationId) {
+
+        log.info("Unstar translation request {} by user {}", translationId, userId);
+
         int affected = translationHistoryRepo.unstarTranslationByUserIdAndTranslationId(userId, translationId);
 
         if(affected == 0){
+            log.warn("Failed to unstar translation {} for user {} - not found or no permission",
+                    translationId, userId);
+
             throw new StarredTranslationProcessException("STARRING_PROCESS_FAILURE",
                     "Could not unstar the translation. It may not exist, be already deleted, or you don't have permission."
             );
         }
-        log.info("Translation {} has been unstarred for user {}", translationId, userId);
+        log.debug("Translation {} has been unstarred successfully for user {}", translationId, userId);
     }
 
 
     @Transactional
     public void clearStarredTranslations(String userId) {
+
+        log.info("Clear all starred translations request by user {}",  userId);
+
        int affected = translationHistoryRepo.clearStarredTranslationsByUserId(userId);
         if(affected == 0){
-            log.info("No Starred translation to clear for user {}", userId);
+            log.debug("No Starred translation to clear for user {}", userId);
         }else{
-            log.info("Cleared {} starred translation(s) for user {}", affected, userId);
+            log.debug("Cleared {} starred translation(s) for user {}", affected, userId);
         }
     }
 

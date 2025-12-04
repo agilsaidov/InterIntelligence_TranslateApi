@@ -10,6 +10,7 @@ import com.project.translate.model.AppUser;
 import com.project.translate.repository.AppUserRepo;
 import com.project.translate.utils.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppUserService {
 
     private final AppUserRepo userRepo;
@@ -31,12 +33,16 @@ public class AppUserService {
 
     public UserResponse getUserData(String userId) {
 
+        log.info("Fetching details for user {}", userId);
+
         AppUser user = userRepo.findByPublicId(userId).orElseThrow(() ->
                 new NotFoundException(
                         "USER_NOT_FOUND",
                         "User not found with given ID"
                 )
         );
+
+        log.debug("Successfully fetched details for user {}", userId);
 
         return UserResponse.builder()
                 .userId(user.getPublicId())
@@ -57,12 +63,16 @@ public class AppUserService {
 
     public UserResponse updateUserData(String userId, UserDataUpdateRequest request) {
 
+        log.info("Updating details for user {}", userId);
+
         AppUser user = userRepo.findByPublicId(userId).orElseThrow(
                 () -> new NotFoundException(
                         "USER_NOT_FOUND",
                         "User not found with given ID"
                 )
         );
+
+        log.debug("Successfully updated details for user {}", userId);
 
         user.setName(request.getFirstName());
         user.setSurname(request.getLastName());
@@ -78,6 +88,9 @@ public class AppUserService {
 
 
     public void changePassword(String userId, ChangePasswordRequest request) {
+
+        log.info("Changing password for user {}", userId);
+
         AppUser user = userRepo.findByPublicId(userId).orElseThrow(
                 () -> new NotFoundException(
                         "USER_NOT_FOUND",
@@ -94,10 +107,15 @@ public class AppUserService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         user.recordUpdate();
         userRepo.save(user);
+
+        log.info("Successfully changed password for user {}", userId);
     }
 
 
     public void softDeleteUser(String userId) {
+
+        log.info("Deleting user {}", userId);
+
         AppUser user = userRepo.findByPublicId(userId).orElseThrow(
                 () -> new NotFoundException(
                         "USER_NOT_FOUND",
@@ -115,6 +133,8 @@ public class AppUserService {
                 BLACKLIST_EXPIRATION,
                 TimeUnit.MINUTES
         );
+
+        log.info("Successfully deleted user {}", userId);
     }
 
 }

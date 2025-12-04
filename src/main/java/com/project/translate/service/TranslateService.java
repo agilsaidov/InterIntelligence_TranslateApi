@@ -21,6 +21,13 @@ public class TranslateService {
     private final TranslationHistoryService historyService;
 
     public TranslationResponse translate(TranslationRequestDto requestDto){
+
+        log.info("Translation request by user {} (from {} to {})",
+                requestDto.getUserId(),
+                requestDto.getSourceLang(),
+                requestDto.getTargetLang()
+        );
+
         if(requestDto.getSourceLang() != null && requestDto.getSourceLang().isBlank()){
             requestDto.setSourceLang(null);
         }
@@ -33,6 +40,11 @@ public class TranslateService {
             );
 
             TranslationHistory savedTranslation =  historyService.saveTranslation(requestDto, result);
+
+            log.debug("Translation is successful for user {} - translated characters: {}",
+                    requestDto.getUserId(),
+                    requestDto.getText().length()
+            );
 
             return new TranslationResponse(
                     savedTranslation.getId(),
