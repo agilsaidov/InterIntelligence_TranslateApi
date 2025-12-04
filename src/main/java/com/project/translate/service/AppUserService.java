@@ -98,6 +98,12 @@ public class AppUserService {
                 )
         );
 
+        if(!request.getNewPassword().equals(request.getConfirmationPassword())){
+            throw new InvalidPasswordException("NONMATCHED_PASSWORDS",
+                    "New and confirmation passwords do not match"
+            );
+        }
+
         if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new InvalidPasswordException("INVALID_PASSWORD",
                     "The provided current password is invalid"

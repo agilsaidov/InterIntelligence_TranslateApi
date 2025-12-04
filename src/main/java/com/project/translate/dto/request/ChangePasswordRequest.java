@@ -23,4 +23,7 @@ public class ChangePasswordRequest {
             message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit"
     )
     private String newPassword;
+
+    @NotNull(message = "Confirmation password is mandatory")
+    private String confirmationPassword;
 }
