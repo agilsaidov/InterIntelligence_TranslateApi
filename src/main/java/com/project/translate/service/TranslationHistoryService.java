@@ -62,6 +62,8 @@ public class TranslationHistoryService {
     @Transactional
     public void removeTranslation(String userId, Long translationId) {
 
+        log.info("Removing translation {} from user {}", translationId, userId);
+
         int affectedRows = translationHistoryRepo.softDeleteByIdAndUserId(translationId, userId);
 
         if(affectedRows == 0){
