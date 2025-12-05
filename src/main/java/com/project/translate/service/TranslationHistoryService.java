@@ -27,12 +27,12 @@ public class TranslationHistoryService {
     private final TranslationHistoryMapper translationHistoryMapper;
 
     @Transactional
-    public TranslationHistory saveTranslation(TranslationRequestDto translationRequestDto, TextResult textResult) {
+    public TranslationHistory saveTranslation(String userId, TranslationRequestDto translationRequestDto, TextResult textResult) {
 
-        log.info("Saving translation for user {}", translationRequestDto.getUserId());
+        log.info("Saving translation for user {}", userId);
 
         TranslationHistory translationHistory = TranslationHistory.builder()
-                .userId(translationRequestDto.getUserId())
+                .userId(userId)
                 .sourceLang(textResult.getDetectedSourceLanguage())
                 .targetLang(translationRequestDto.getTargetLang())
                 .translatedText(textResult.getText())

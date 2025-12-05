@@ -8,9 +8,6 @@ import lombok.Data;
 @Data
 public class TranslationRequestDto {
 
-    @NotNull(message = "userId is required")
-    private String userId;
-
     private String sourceLang;
 
     @NotBlank(message = "Target language is required")

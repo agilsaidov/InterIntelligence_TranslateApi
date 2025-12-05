@@ -20,10 +20,10 @@ public class TranslateService {
     private final DeepLClient deepLClient;
     private final TranslationHistoryService historyService;
 
-    public TranslationResponse translate(TranslationRequestDto requestDto){
+    public TranslationResponse translate(String userId, TranslationRequestDto requestDto){
 
         log.info("Translation request by user {} (from {} to {})",
-                requestDto.getUserId(),
+                userId,
                 requestDto.getSourceLang(),
                 requestDto.getTargetLang()
         );
@@ -39,10 +39,10 @@ public class TranslateService {
                     requestDto.getTargetLang()
             );
 
-            TranslationHistory savedTranslation =  historyService.saveTranslation(requestDto, result);
+            TranslationHistory savedTranslation =  historyService.saveTranslation(userId, requestDto, result);
 
             log.debug("Translation is successful for user {} - translated characters: {}",
-                    requestDto.getUserId(),
+                    userId,
                     requestDto.getText().length()
             );
 
