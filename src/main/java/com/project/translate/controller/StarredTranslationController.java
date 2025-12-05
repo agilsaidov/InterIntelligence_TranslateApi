@@ -1,5 +1,6 @@
 package com.project.translate.controller;
 
+import com.project.translate.dto.response.StarredTranslationResponse;
 import com.project.translate.model.TranslationHistory;
 import com.project.translate.service.TranslationHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,16 @@ public class StarredTranslationController {
 
         return ResponseEntity.ok().
                 body(translationHistoryService.getStarredTranslations(userId, PageRequest.of(page, 10)));
+    }
+
+
+    @GetMapping("/{translationId}")
+    public ResponseEntity<StarredTranslationResponse> getStarredTranslation(@PathVariable Long translationId,
+                                                                            @AuthenticationPrincipal String userId) {
+
+        StarredTranslationResponse response = translationHistoryService.getStarredTranslation(userId, translationId);
+        return ResponseEntity.ok().body(response);
+
     }
 
 

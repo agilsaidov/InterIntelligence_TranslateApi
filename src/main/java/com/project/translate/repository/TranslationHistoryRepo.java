@@ -41,6 +41,10 @@ public interface TranslationHistoryRepo extends CrudRepository<TranslationHistor
     Page<TranslationHistory> getStarredTranslationsByUserId(@Param("userId") String userId, Pageable pageable);
 
 
+    @Query("SELECT t FROM TranslationHistory t where t.userId = :userId AND t.id = :translationId AND t.starred = true")
+    TranslationHistory getStarredTranslationByUserIdAndTranslationId(@Param("userId") String userId, @Param("translationId") Long translationId);
+
+
     @Modifying
     @Transactional
     @Query("UPDATE TranslationHistory t SET t.starred = false WHERE t.userId = :userId AND t.id = :translationId AND t.starred = true")

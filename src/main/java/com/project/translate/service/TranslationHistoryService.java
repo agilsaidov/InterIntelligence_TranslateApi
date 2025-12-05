@@ -2,6 +2,7 @@ package com.project.translate.service;
 
 import com.deepl.api.TextResult;
 import com.project.translate.dto.request.TranslationRequestDto;
+import com.project.translate.dto.response.StarredTranslationResponse;
 import com.project.translate.dto.response.TranslationHistoryResponse;
 import com.project.translate.exception.NotFoundException;
 import com.project.translate.exception.StarredTranslationProcessException;
@@ -100,7 +101,7 @@ public class TranslationHistoryService {
                     translationId, userId);
 
             throw new StarredTranslationProcessException("STARRING_PROCESS_FAILURE",
-                    "Could not star the translation. It may not exist, be deleted, or you don't have permission."
+                    "Could not star the translation. It may not exist, be deleted, or user don't have permission."
             );
         }
 
@@ -112,6 +113,31 @@ public class TranslationHistoryService {
         log.info("Starred translations fetched by user {}", userId);
 
         return translationHistoryRepo.getStarredTranslationsByUserId(userId, pageable);
+    }
+
+
+    public StarredTranslationResponse getStarredTranslation(String userId, Long translationId) {
+        log.info("Starred translation request {} by user {}", translationId, userId);
+
+        TranslationHistory response = translationHistoryRepo.getStarredTranslationByUserIdAndTranslationId(userId, translationId);
+
+        if(response == null){
+            log.warn("Starred translation {} not found for user {}", translationId, userId);
+
+            throw new NotFoundException("STARRED_TRANSLATION_NOT_FOUND",
+                    "Starred translation " + translationId + " not found for user " + userId
+            );
+
+        }
+
+        return StarredTranslationResponse.builder()
+                .translationId(response.getId())
+                .sourceText(response.getSourceText())
+                .translatedText(response.getTranslatedText())
+                .sourceLang(response.getSourceLang())
+                .targetLang(response.getTargetLang())
+                .starredAt(response.getStarredAt())
+                .build();
     }
 
 
