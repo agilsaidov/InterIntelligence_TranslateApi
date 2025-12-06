@@ -1,6 +1,5 @@
 package com.project.translate.controller;
 
-import com.deepl.api.TextResult;
 import com.project.translate.dto.request.TranslationRequestDto;
 import com.project.translate.dto.response.TranslationResponse;
 import com.project.translate.service.TranslateService;
